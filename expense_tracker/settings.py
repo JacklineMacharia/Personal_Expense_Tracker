@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'expense_tracker.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.parse('postgresql://root:7JtQyXCRMmIy8qslPChpvOdjIyLYdv3R@dpg-cvlfcfq4d50c73e66ao0-a/personalexpensetracker')
+    'default': dj_database_url.parse('postgresql://root:7JtQyXCRMmIy8qslPChpvOdjIyLYdv3R@dpg-cvlfcfq4d50c73e66ao0-a.oregon-postgres.render.com/personalexpensetracker')
 }
 
 
