@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import Sum, Avg, Count
 from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
 from .models import Category, Expense
@@ -21,7 +21,7 @@ def dashboard(request):
     # Get user's expenses
     expenses = Expense.objects.filter(user=request.user)
     
-    # Calculate statistics
+    # Calculate basic statistics
     total_expenses = expenses.aggregate(total=Sum('amount'))['total'] or 0
     monthly_expenses = expenses.filter(
         date__year=datetime.now().year,
@@ -31,12 +31,12 @@ def dashboard(request):
     # Get recent expenses
     recent_expenses = expenses.order_by('-date')[:5]
     
-    # Get expenses by category for chart
+    # Get expenses by category for pie chart
     category_data = expenses.values('category__name').annotate(total=Sum('amount'))
     category_labels = [item['category__name'] for item in category_data]
     category_amounts = [float(item['total']) for item in category_data]
     
-    # Get monthly trend data
+    # Get monthly trend data for line chart
     monthly_data = expenses.annotate(
         month=TruncMonth('date')
     ).values('month').annotate(total=Sum('amount')).order_by('month')
@@ -44,16 +44,76 @@ def dashboard(request):
     monthly_labels = [item['month'].strftime('%B %Y') for item in monthly_data]
     monthly_amounts = [float(item['total']) for item in monthly_data]
     
+    # Calculate additional statistics
+    today = datetime.now().date()
+    week_ago = today - timedelta(days=7)
+    month_ago = today - timedelta(days=30)
+    
+    weekly_expenses = expenses.filter(
+        date__gte=week_ago
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    
+    monthly_average = expenses.filter(
+        date__gte=month_ago
+    ).aggregate(avg=Avg('amount'))['avg'] or 0
+    
+    # Get top spending categories
+    top_categories = expenses.values(
+        'category__name'
+    ).annotate(
+        total=Sum('amount'),
+        count=Count('id')
+    ).order_by('-total')[:5]
+    
+    # Get spending trends
+    current_month = datetime.now().month
+    previous_month = current_month - 1 if current_month > 1 else 12
+    
+    current_month_expenses = expenses.filter(
+        date__year=datetime.now().year,
+        date__month=current_month
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    
+    previous_month_expenses = expenses.filter(
+        date__year=datetime.now().year if current_month > 1 else datetime.now().year - 1,
+        date__month=previous_month
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    
+    # Calculate percentage change
+    if previous_month_expenses > 0:
+        percentage_change = ((current_month_expenses - previous_month_expenses) / previous_month_expenses) * 100
+    else:
+        percentage_change = 0
+    
     context = {
+        # Basic statistics
         'total_expenses': total_expenses,
         'monthly_expenses': monthly_expenses,
         'total_categories': Category.objects.count(),
         'total_transactions': expenses.count(),
+        
+        # Recent expenses
         'recent_expenses': recent_expenses,
+        
+        # Chart data
         'category_labels': category_labels,
         'category_data': category_amounts,
         'monthly_labels': monthly_labels,
         'monthly_data': monthly_amounts,
+        
+        # Additional statistics
+        'weekly_expenses': weekly_expenses,
+        'monthly_average': monthly_average,
+        'top_categories': top_categories,
+        
+        # Spending trends
+        'current_month_expenses': current_month_expenses,
+        'previous_month_expenses': previous_month_expenses,
+        'percentage_change': percentage_change,
+        
+        # Date ranges for filters
+        'week_ago': week_ago,
+        'month_ago': month_ago,
     }
     return render(request, 'dashboard.html', context)
 
