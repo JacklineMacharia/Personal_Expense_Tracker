@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h2 mb-4">Dashboard</h1>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">Total Expenses</h5>
+                <h2 class="card-text">${{ total_expenses|default:"0.00" }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">This Month</h5>
+                <h2 class="card-text">${{ monthly_expenses|default:"0.00" }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h5 class="card-title">Categories</h5>
+                <h2 class="card-text">{{ total_categories|default:"0" }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h5 class="card-title">Transactions</h5>
+                <h2 class="card-text">{{ total_transactions|default:"0" }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Expenses by Category</h5>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Monthly Trend</h5>
+                <canvas id="monthlyTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="card-title mb-0">Recent Transactions</h5>
+                    <a href="{% url 'expense_list' %}" class="btn btn-primary btn-sm">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in recent_expenses %}
+                            <tr>
+                                <td>{{ expense.date }}</td>
+                                <td>{{ expense.category.name }}</td>
+                                <td>{{ expense.description }}</td>
+                                <td>${{ expense.amount }}</td>
+                                <td>
+                                    <a href="{% url 'expense_update' expense.id %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'expense_delete' expense.id %}" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No transactions found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Category Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ category_labels|safe }},
+            datasets: [{
+                data: {{ category_data|safe }},
+                backgroundColor: [
+                    '#2ecc71',
+                    '#3498db',
+                    '#9b59b6',
+                    '#f1c40f',
+                    '#e74c3c',
+                    '#1abc9c'
+                ]
+            }]
+        }
+    });
+
+    // Monthly Trend Chart
+    const trendCtx = document.getElementById('monthlyTrendChart').getContext('2d');
+    new Chart(trendCtx, {
+        type: 'line',
+        data: {
+            labels: {{ monthly_labels|safe }},
+            datasets: [{
+                label: 'Monthly Expenses',
+                data: {{ monthly_data|safe }},
+                borderColor: '#3498db',
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %} 

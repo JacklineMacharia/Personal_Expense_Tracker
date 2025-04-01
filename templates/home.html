@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row align-items-center min-vh-75">
+    <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-4">Track Your Expenses with Ease</h1>
+        <p class="lead mb-4">Take control of your finances with our intuitive expense tracking solution. Monitor your spending, analyze patterns, and make better financial decisions.</p>
+        {% if not user.is_authenticated %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 me-md-2">Get Started</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg px-4">Login</a>
+            </div>
+        {% else %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-4 me-md-2">Go to Dashboard</a>
+                <a href="{% url 'expense_create' %}" class="btn btn-outline-primary btn-lg px-4">Add Expense</a>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-lg-6">
+        <img src="https://placehold.co/600x400" alt="Expense Tracker Dashboard" class="img-fluid rounded shadow">
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12 text-center mb-5">
+        <h2 class="fw-bold">Features</h2>
+        <p class="lead">Everything you need to manage your expenses effectively</p>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-pie fa-3x text-primary mb-3"></i>
+                <h3 class="card-title h5">Expense Analytics</h3>
+                <p class="card-text">Visualize your spending patterns with interactive charts and graphs.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-tags fa-3x text-primary mb-3"></i>
+                <h3 class="card-title h5">Category Management</h3>
+                <p class="card-text">Organize expenses into custom categories for better tracking.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-mobile-alt fa-3x text-primary mb-3"></i>
+                <h3 class="card-title h5">Responsive Design</h3>
+                <p class="card-text">Access your expense tracker from any device, anywhere.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not user.is_authenticated %}
+<div class="row mt-5 bg-light p-5 rounded">
+    <div class="col-12 text-center">
+        <h2 class="fw-bold mb-4">Ready to Get Started?</h2>
+        <p class="lead mb-4">Join thousands of users who are already managing their expenses effectively.</p>
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5">Create Your Account</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 
