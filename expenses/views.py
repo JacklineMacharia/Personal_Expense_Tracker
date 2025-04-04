@@ -85,6 +85,9 @@ def dashboard(request):
     else:
         percentage_change = 0
     
+    # Calculate absolute value for display
+    percentage_change_abs = abs(percentage_change)
+    
     context = {
         # Basic statistics
         'total_expenses': total_expenses,
@@ -110,6 +113,7 @@ def dashboard(request):
         'current_month_expenses': current_month_expenses,
         'previous_month_expenses': previous_month_expenses,
         'percentage_change': percentage_change,
+        'percentage_change_abs': percentage_change_abs,
         
         # Date ranges for filters
         'week_ago': week_ago,

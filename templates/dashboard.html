@@ -32,7 +32,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">${{ monthly_expenses|floatformat:2 }}</div>
                             {% if percentage_change != 0 %}
                                 <div class="text-xs {% if percentage_change > 0 %}text-danger{% else %}text-success{% endif %}">
-                                    {% if percentage_change > 0 %}↑{% else %}↓{% endif %} {{ percentage_change|abs|floatformat:1 }}%
+                                    {% if percentage_change > 0 %}↑{% else %}↓{% endif %} {{ percentage_change_abs|floatformat:1 }}%
                                 </div>
                             {% endif %}
                         </div>
