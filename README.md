@@ -1,58 +1,126 @@
 # Personal Expense Tracker
 
-A Django-based web application for tracking personal expenses with REST API support and PostgreSQL database.
+A web-based expense tracking application built with Django that helps users manage and analyze their personal expenses.
 
 ## Features
 
-- Django REST Framework (DRF) backend
-- PostgreSQL database hosted on Render
-- User authentication and authorization
-- CRUD operations for expenses
-- Django Templates for frontend
-- CORS support for API access
+- User Authentication (Register, Login, Logout)
+- Dashboard with expense statistics and visualizations
+  - Total expenses overview
+  - Monthly spending trends
+  - Category-wise expense distribution
+  - Recent transactions
+- Expense Management
+  - Add, edit, and delete expenses
+  - Categorize expenses
+  - Date-based tracking
+- Responsive Design
+  - Works on desktop and mobile devices
+  - Clean and intuitive interface
 
-## Tech Stack
+## Technology Stack
 
-- Python 3.x
-- Django 4.2.7
-- Django REST Framework
-- PostgreSQL
-- Django Templates
+- Backend: Django 4.2.7
+- Database: PostgreSQL
+- Frontend: 
+  - Django Templates
+  - Bootstrap 5
+  - Chart.js for visualizations
+  - Font Awesome icons
+- API: Django Rest Framework
 
 ## Setup Instructions
 
 1. Clone the repository:
-```bash
-git clone https://github.com/JacklineMacharia/Personal_Expense_Tracker.git
-cd Personal_Expense_Tracker
+   ```bash
+   git clone https://github.com/JacklineMacharia/Personal_Expense_Tracker.git
+   cd Personal_Expense_Tracker
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Configure the database in `settings.py`
+
+4. Apply migrations:
+   ```bash
+   python manage.py migrate
+   ```
+
+5. Create a superuser:
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+6. Run the development server:
+   ```bash
+   python manage.py runserver
+   ```
+
+7. Visit http://127.0.0.1:8000/ in your browser
+
+## Project Structure
+
+```
+expense_tracker/
+├── expense_tracker/      # Project settings
+├── expenses/            # Main application
+├── static/             # Static files (CSS, JS, Images)
+├── templates/          # HTML templates
+│   ├── base.html      # Base template
+│   ├── dashboard.html # Dashboard template
+│   └── expenses/      # Expense management templates
+└── requirements.txt    # Project dependencies
 ```
 
-2. Create and activate virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-```
+## Features in Detail
 
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+### Dashboard
+- Total expense overview
+- Monthly spending trends chart
+- Category distribution pie chart
+- Recent transactions list
+- Top spending categories
 
-4. Run migrations:
-```bash
-python manage.py migrate
-```
+### Expense Management
+- Add new expenses with category and description
+- Edit existing expenses
+- Delete expenses
+- View all expenses in a paginated list
 
-5. Start the development server:
-```bash
-python manage.py runserver
-```
+### User Interface
+- Responsive Bootstrap design
+- Interactive charts and graphs
+- User-friendly forms
+- Clean and modern layout
 
-## Environment Variables
+## API Endpoints
 
-The project uses the following environment variables:
-- `DATABASE_URL`: PostgreSQL database URL (configured for Render)
+The application provides REST API endpoints for:
+- Expense CRUD operations
+- Category management
+- Expense statistics
+
+## Future Enhancements
+
+- Budget planning and tracking
+- Export expenses to CSV/PDF
+- Income tracking
+- Financial goals
+- Email notifications
+- Advanced filtering and search
+- Multi-currency support
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
 
 ## License
 
-MIT License 
+This project is licensed under the MIT License. 
